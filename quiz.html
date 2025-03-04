@@ -18,7 +18,7 @@
                 /*
                 Checks if the choice is the correct answer to the question
                 */
-                return choice == this.correctAns;
+                return choice === this.correctAns;
             }
         }
 
@@ -50,7 +50,7 @@
             }
 
             isCorrectAnswer(choice){
-                const currentQues = getCurrentQuestion()
+                const currentQues = this.getCurrentQuestion()
                 if (currentQues.isCorrectAns(choice)){      //------- would it help for those working on other parts to have the score incremented in here?
                     return true;
                 } else {
