@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Quiz</title>
+</head>
+
+<body>
+    <script>
+        class Question {
+            constructor(text, choices, correctAns){
+                this.text = text;
+                this.choices = choices;
+                this.correctAns = correctAns;
+            }
+            
+            isCorrectAns(choice){
+                /*
+                Checks if the choice is the correct answer to the question
+                */
+                return choice == this.correctAns;
+            }
+        }
+
+        class User {
+            constructor(userName, score){
+                this.userName = userName;
+                this.score = score;
+            }
+
+            incrementScore() {
+                this.score++;
+            }
+        }
+
+        class Quiz {
+            /*
+            Manages overall quiz operations
+            */
+          
+            constructor(user, allQues){
+                this.user = user;
+                this.allQues = allQues;     //----- assuming we use arrays to hold all the questions
+                this.quesIndex = 0;
+                this.score = 0;
+            }
+
+            getCurrentQuestion() {
+                return this.allQues[this.quesIndex];        //----- assuming we use arrays to hold all the questions
+            }
+
+            isCorrectAnswer(choice){
+                const currentQues = getCurrentQuestion()
+                if (currentQues.isCorrectAns(choice)){      //------- would it help for those working on other parts to have the score incremented in here?
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+
+            incrementScore(){
+                this.score++;
+                this.user.incrementScore();
+            }
+
+            getScore(){
+                /*
+                Get the score of the game for the user
+                */
+                return this.score;
+            }
+
+            areQuesLeft(){
+                /*
+                Checks whether there are any more questions left in the quiz
+                */
+                return this.quesIndex < this.allQues.length -1;
+            }
+
+            moveToNextQuestion(){
+                if (this.areQuesLeft()){
+                    this.quesIndex++;
+                }
+            }
+        }
+    </script>
+
+
+</body>
+
+</html>
