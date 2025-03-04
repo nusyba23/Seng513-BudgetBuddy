@@ -38,15 +38,19 @@
             Manages overall quiz operations
             */
           
-            constructor(user, allQues){
+            constructor(user){ 
                 this.user = user;
-                this.allQues = allQues;     //----- assuming we use arrays to hold all the questions
+                this.allQues = [];     //----- assuming we use an array to hold all the questions
                 this.quesIndex = 0;
                 this.score = 0;
             }
 
+            addQuestion(question) {
+                this.allQues.push(question);
+            }
+
             getCurrentQuestion() {
-                return this.allQues[this.quesIndex];        //----- assuming we use arrays to hold all the questions
+                return this.allQues[this.quesIndex];        //----- assuming we use an array to hold all the questions
             }
 
             isCorrectAnswer(choice){
