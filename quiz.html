@@ -41,7 +41,7 @@
             constructor(user){ 
                 this.user = user;
                 this.allQues = [];     //----- assuming we use an array to hold all the questions
-                this.quesIndex = 0;
+                this.quesIndex = -1;
                 this.score = 0;
             }
 
@@ -81,12 +81,42 @@
                 return this.quesIndex < this.allQues.length -1;
             }
 
-            moveToNextQuestion(){
-                if (this.areQuesLeft()){
-                    this.quesIndex++;
+           //deleting moveToNextQuestion() function, the logic is in the generator function 
+          
+             
+
+        //manage flow of quiz questions
+            *generateQuestions()
+            {
+                while (areQuesLeft()) 
+                {
+                   this.quesIndex++;
+                   let currentQuestion = this.allQues[this.quesIndex];
+
+                   let userAnswer = yield currentQuestion; // yield question and wait for answer , done=true when no more qs
+
+                   //increase quiz score if correct answer
+                   if(currentQues.isCorrectAns(userAnswer)){
+                    this.incrementScore();
+                    console.log("Correct Answer!")
+                   }
+
+                   else {console.log("Incorrect Answer")}
+
+
                 }
+
+
             }
         }
+
+
+       
+
+
+
+
+
     </script>
 
 
