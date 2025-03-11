@@ -1,125 +1,383 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <title>Quiz</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz App</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .quiz-container {
+            background-color: #f5f5f5;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .question {
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+        }
+        
+        .choices {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .choice-btn {
+            padding: 10px;
+            border: 1px solid #ddd;
+            background-color: #fff;
+            border-radius: 4px;
+            cursor: pointer;
+            text-align: left;
+        }
+        
+        .choice-btn:hover {
+            background-color: #f0f0f0;
+        }
+        
+        .feedback {
+            margin-bottom: 20px;
+            padding: 10px;
+            border-radius: 4px;
+        }
+        
+        .correct {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        
+        .incorrect {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        
+        .score {
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        
+        .next-btn, .start-btn {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        
+        .next-btn:hover, .start-btn:hover {
+            background-color: #0069d9;
+        }
+        
+        .results {
+            text-align: center;
+            margin-top: 20px;
+        }
+        
+        .hidden {
+            display: none;
+        }
+    </style>
 </head>
-
 <body>
+    <div class="quiz-container">
+        <h1>Quiz App</h1>
+        
+        <!-- Welcome Screen -->
+        <div id="welcome-screen">
+            <p>Welcome to the Quiz! Enter your name to begin:</p>
+            <input type="text" id="username-input" placeholder="Your Name">
+            <button id="start-btn" class="start-btn">Start Quiz</button>
+        </div>
+        
+        <!-- Quiz Screen -->
+        <div id="quiz-screen" class="hidden">
+            <div class="score">Score: <span id="score-display">0</span></div>
+            <div class="question" id="question-text"></div>
+            <div class="choices" id="choices-container"></div>
+            <div class="feedback hidden" id="feedback"></div>
+            <button id="next-btn" class="next-btn hidden">Next Question</button>
+        </div>
+        
+        <!-- Results Screen -->
+        <div id="results-screen" class="hidden results">
+            <h2>Quiz Completed!</h2>
+            <p>Your score: <span id="final-score"></span></p>
+            <button id="restart-btn" class="start-btn">Restart Quiz</button>
+        </div>
+    </div>
+    
     <script>
         class Question {
-            constructor(text, choices, correctAns){
+            constructor(text, choices, correctAns) {
                 this.text = text;
                 this.choices = choices;
                 this.correctAns = correctAns;
             }
             
-            isCorrectAns(choice){
+            isCorrectAns(choice) {
                 /*
                 Checks if the choice is the correct answer to the question
                 */
                 return choice === this.correctAns;
             }
         }
-
+        
         class User {
-            constructor(userName, score){
+            constructor(userName) {
                 this.userName = userName;
-                this.score = score;
+                this.score = 0;
             }
-
+            
             incrementScore() {
                 this.score++;
             }
+            
+            resetScore() {
+                this.score = 0;
+            }
         }
-
+        
         class Quiz {
             /*
             Manages overall quiz operations
             */
-          
-            constructor(user){ 
+            constructor(user) {
                 this.user = user;
-                this.allQues = [];     //----- assuming we use an array to hold all the questions
+                this.allQues = [];  // Array to hold all the questions
                 this.quesIndex = -1;
                 this.score = 0;
+                this.quizIterator = null;
             }
-
+            
             addQuestion(question) {
                 this.allQues.push(question);
             }
-
+            
             getCurrentQuestion() {
-                return this.allQues[this.quesIndex];        //----- assuming we use an array to hold all the questions
+                return this.allQues[this.quesIndex];
             }
-
-            isCorrectAnswer(choice){
-                const currentQues = this.getCurrentQuestion()
-                if (currentQues.isCorrectAns(choice)){      //------- would it help for those working on other parts to have the score incremented in here?
-                    return true;
-                } else {
-                    return false;
-                }
+            
+            isCorrectAnswer(choice) {
+                const currentQues = this.getCurrentQuestion();
+                return currentQues.isCorrectAns(choice);
             }
-
-            incrementScore(){
+            
+            incrementScore() {
                 this.score++;
                 this.user.incrementScore();
             }
-
-            getScore(){
+            
+            getScore() {
                 /*
                 Get the score of the game for the user
                 */
                 return this.score;
             }
-
-            areQuesLeft(){
+            
+            areQuesLeft() {
                 /*
                 Checks whether there are any more questions left in the quiz
                 */
-                return this.quesIndex < this.allQues.length -1;
+                return this.quesIndex < this.allQues.length - 1;
             }
-
-           //deleting moveToNextQuestion() function, the logic is in the generator function 
-          
-             
-
-        //manage flow of quiz questions
-            *generateQuestions()
-            {
-                while (areQuesLeft()) 
-                {
-                   this.quesIndex++;
-                   let currentQuestion = this.allQues[this.quesIndex];
-
-                   let userAnswer = yield currentQuestion; // yield question and wait for answer , done=true when no more qs
-
-                   //increase quiz score if correct answer
-                   if(currentQues.isCorrectAns(userAnswer)){
-                    this.incrementScore();
-                    console.log("Correct Answer!")
-                   }
-
-                   else {console.log("Incorrect Answer")}
-
-
+            
+            startQuiz() {
+                this.quesIndex = -1;
+                this.score = 0;
+                this.user.resetScore();
+                this.quizIterator = this.generateQuestions();
+                return this.nextQuestion();
+            }
+            
+            nextQuestion() {
+                const result = this.quizIterator.next();
+                return result;
+            }
+            
+            submitAnswer(answer) {
+                const result = this.quizIterator.next(answer);
+                return result;
+            }
+            
+            // Manage flow of quiz questions
+            *generateQuestions() {
+                while (this.areQuesLeft()) {
+                    this.quesIndex++;
+                    let currentQuestion = this.allQues[this.quesIndex];
+                    let userAnswer = yield currentQuestion; // yield question and wait for answer
+                    
+                    // Increase quiz score if correct answer
+                    if (this.isCorrectAnswer(userAnswer)) {
+                        this.incrementScore();
+                        yield true; // yield true for correct answer
+                    } else {
+                        yield false; // yield false for incorrect answer
+                    }
                 }
-
-
+                
+                return { done: true, score: this.score, totalQuestions: this.allQues.length };
+            }
+            
+            resetQuiz() {
+                this.quesIndex = -1;
+                this.score = 0;
+                this.user.resetScore();
             }
         }
-
-
-       
-
-
-
-
-
+        
+        // DOM Elements
+        const welcomeScreen = document.getElementById('welcome-screen');
+        const quizScreen = document.getElementById('quiz-screen');
+        const resultsScreen = document.getElementById('results-screen');
+        const usernameInput = document.getElementById('username-input');
+        const startBtn = document.getElementById('start-btn');
+        const questionText = document.getElementById('question-text');
+        const choicesContainer = document.getElementById('choices-container');
+        const feedbackElement = document.getElementById('feedback');
+        const nextBtn = document.getElementById('next-btn');
+        const scoreDisplay = document.getElementById('score-display');
+        const finalScore = document.getElementById('final-score');
+        const restartBtn = document.getElementById('restart-btn');
+        
+        // Quiz state variables
+        let user;
+        let quiz;
+        let currentQuestion;
+        
+        // Sample questions
+        const sampleQuestions = [
+            new Question(
+                "What is the capital of France?",
+                ["Paris", "London", "Berlin", "Madrid"],
+                "Paris"
+            ),
+            new Question(
+                "Which planet is known as the Red Planet?",
+                ["Venus", "Mars", "Jupiter", "Saturn"],
+                "Mars"
+            ),
+            new Question(
+                "What is 2 + 2?",
+                ["3", "4", "5", "6"],
+                "4"
+            ),
+            new Question(
+                "Who wrote 'Romeo and Juliet'?",
+                ["Charles Dickens", "William Shakespeare", "Jane Austen", "Mark Twain"],
+                "William Shakespeare"
+            ),
+            new Question(
+                "What is the largest ocean on Earth?",
+                ["Atlantic Ocean", "Indian Ocean", "Arctic Ocean", "Pacific Ocean"],
+                "Pacific Ocean"
+            )
+        ];
+        
+        // Initialize quiz
+        function initializeQuiz(username) {
+            user = new User(username);
+            quiz = new Quiz(user);
+            
+            // Add sample questions
+            sampleQuestions.forEach(question => {
+                quiz.addQuestion(question);
+            });
+        }
+        
+        // Display current question
+        function displayQuestion(question) {
+            questionText.textContent = question.text;
+            choicesContainer.innerHTML = '';
+            
+            question.choices.forEach(choice => {
+                const button = document.createElement('button');
+                button.textContent = choice;
+                button.classList.add('choice-btn');
+                button.addEventListener('click', () => handleAnswer(choice));
+                choicesContainer.appendChild(button);
+            });
+        }
+        
+        // Handle user answer
+        function handleAnswer(choice) {
+            // Disable all choice buttons
+            const choiceButtons = document.querySelectorAll('.choice-btn');
+            choiceButtons.forEach(btn => {
+                btn.disabled = true;
+                if (btn.textContent === choice) {
+                    btn.style.fontWeight = 'bold';
+                }
+            });
+            
+            // Submit answer and get feedback
+            const feedbackResult = quiz.submitAnswer(choice);
+            const isCorrect = feedbackResult.value;
+            
+            // Display feedback
+            feedbackElement.textContent = isCorrect ? 'Correct!' : `Incorrect! The correct answer is: ${currentQuestion.correctAns}`;
+            feedbackElement.className = 'feedback ' + (isCorrect ? 'correct' : 'incorrect');
+            feedbackElement.classList.remove('hidden');
+            
+            // Update score display
+            scoreDisplay.textContent = quiz.getScore();
+            
+            // Show next button or finish quiz
+            if (quiz.areQuesLeft()) {
+                nextBtn.classList.remove('hidden');
+            } else {
+                // Show final results when no questions left
+                finalScore.textContent = `${quiz.getScore()} out of ${quiz.allQues.length}`;
+                setTimeout(() => {
+                    quizScreen.classList.add('hidden');
+                    resultsScreen.classList.remove('hidden');
+                }, 1500);
+            }
+        }
+        
+        // Move to next question
+        function moveToNextQuestion() {
+            const result = quiz.nextQuestion();
+            currentQuestion = result.value;
+            
+            // Hide feedback and next button
+            feedbackElement.classList.add('hidden');
+            nextBtn.classList.add('hidden');
+            
+            // Display new question
+            displayQuestion(currentQuestion);
+        }
+        
+        // Event listeners
+        startBtn.addEventListener('click', () => {
+            const username = usernameInput.value.trim() || 'Player';
+            initializeQuiz(username);
+            
+            welcomeScreen.classList.add('hidden');
+            quizScreen.classList.remove('hidden');
+            
+            // Start quiz and display first question
+            const firstQuestionResult = quiz.startQuiz();
+            currentQuestion = firstQuestionResult.value;
+            displayQuestion(currentQuestion);
+        });
+        
+        nextBtn.addEventListener('click', moveToNextQuestion);
+        
+        restartBtn.addEventListener('click', () => {
+            resultsScreen.classList.add('hidden');
+            welcomeScreen.classList.remove('hidden');
+            usernameInput.value = '';
+        });
     </script>
-
-
 </body>
-
 </html>
