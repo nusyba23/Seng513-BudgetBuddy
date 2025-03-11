@@ -72,7 +72,7 @@
             */
             constructor(user) {
                 this.user = user;
-                this.allQues = null;  // Array to hold all the questions
+                this.allQues = [];  // Array to hold all the questions
                 this.quesIndex = -1;
                 this.score = 0;
                 this.quizIterator = null;
@@ -119,11 +119,11 @@
             }
 
             increaseDifficulty() {
-                this.difficultyLvl = ((this.difficultLvl) % n) + 1;
+                this.difficultyLvl = ((this.difficultyLvl) % n) + 1;
             }
                 
             decreaseDifficulty() {
-                this.difficultyLvl = ((this.difficultLvl -2) % n) + 1;
+                this.difficultyLvl = ((this.difficultyLvl -2) % n) + 1;
             }
             
             startQuiz() {
