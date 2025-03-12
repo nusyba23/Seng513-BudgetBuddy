@@ -182,7 +182,7 @@
                         const results = data.results;
                         const questions = results.map((result) => {
                             const choices = [...result.incorrect_answers, result.correct_answer];
-                            return new Question(result.question, choices, result.correct_answer, result.difficulty);
+                            return new Question(decodeURIComponent(result.question), choices, result.correct_answer, result.difficulty);
                         });
                         this.allQues = questions;
                     } else {
