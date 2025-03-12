@@ -111,7 +111,7 @@
                 /*
                 Checks whether there are any more questions left in the quiz
                 */
-                return this.quesIndex < this.allQues.length - 1;
+                return this.allQues.length > 0;
             }
             
             setDifficulty(level) {
@@ -119,10 +119,12 @@
             }
 
             increaseDifficulty() {
+                let n = 2;
                 this.difficultyLvl = ((this.difficultyLvl) % n) + 1;
             }
                 
             decreaseDifficulty() {
+                let n = 2;
                 this.difficultyLvl = ((this.difficultyLvl -2) % n) + 1;
             }
             
@@ -142,19 +144,35 @@
             submitAnswer(answer) {
                 const result = this.quizIterator.next(answer);
                 return result;
+            } 
+
+            nextQuesIndex(){
+                let index = this.allQues.findIndex(question => question.difficulty === this.difficultyLvl);
+
+                // If there is no question with the difficulty level
+                if (index === -1) {
+                    index = this.allQues.length > 0 ? 0 : -1;
+                    this.increaseDifficulty();
+                }
+                
+                return index;
+            }
+
+            removeQues(){
+                let currQues = this.getCurrentQuestion();
+                this.allQues = this.allQues.filter(question => question !== currQues);
             }
             
             // Manage flow of quiz questions
             *generateQuestions() {
                 while (this.areQuesLeft()) {
-                    this.quesIndex++;
+                    this.quesIndex = this.nextQuesIndex()
                     let currentQuestion = this.allQues[this.quesIndex];
                     let userAnswer = yield currentQuestion; // yield question and wait for answer
                     
                     // Increase quiz score if correct answer
                     if (this.isCorrectAnswer(userAnswer)) {
                         this.incrementScore();
-                        this.increaseDifficulty();
                         yield true; // yield true for correct answer
                     } else {
                         yield false; // yield false for incorrect answer
@@ -182,7 +200,7 @@
                         const results = data.results;
                         const questions = results.map((result) => {
                             const choices = [...result.incorrect_answers, result.correct_answer];
-                            return new Question(decodeURIComponent(result.question), choices, result.correct_answer, result.difficulty);
+                            return new Question(result.question, choices, result.correct_answer, result.difficulty);
                         });
                         this.allQues = questions;
                     } else {
@@ -195,6 +213,8 @@
             }
 
         }
+
+
         
         // DOM Elements
         const welcomeScreen = document.getElementById('welcome-screen');
