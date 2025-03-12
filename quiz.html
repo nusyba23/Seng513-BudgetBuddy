@@ -76,14 +76,15 @@
                 this.quesIndex = -1;
                 this.score = 0;
                 this.quizIterator = null;
-                this.difficultyLvl = 1;
+                this.difficultyLvl = null;
+                this.numIncorrect = 0;      // Number of incorrect answers in a row
+                this.numCorrect = 0;        // Number of correct answers in a row
             }
             
             addQuestion(questions) {
                 questions.forEach(function addQ(question) {
                     this.allQues.push(question);
                 }, this);
-                //this.allQues.push(question);
             }
             
             getCurrentQuestion() {
@@ -98,6 +99,14 @@
             incrementScore() {
                 this.score++;
                 this.user.incrementScore();
+
+                // Increase difficulty if needed
+                if (this.numCorrect >= 2) {
+                    this.increaseDifficulty();
+                    this.numCorrect = 0;
+                }
+                this.numCorrect += 1;
+                this.numIncorrect = 0;
             }
             
             getScore() {
@@ -119,18 +128,25 @@
             }
 
             increaseDifficulty() {
-                let n = 2;
-                this.difficultyLvl = ((this.difficultyLvl) % n) + 1;
+                if (this.difficultyLvl == "medium") {
+                    this.difficultyLvl = "hard";
+                } else {
+                    this.difficultyLvl = "medium";
+                }
             }
                 
             decreaseDifficulty() {
-                let n = 2;
-                this.difficultyLvl = ((this.difficultyLvl -2) % n) + 1;
+                if (this.difficultyLvl == "hard"){
+                    this.difficultyLvl = "medium";
+                } else if (this.difficultyLvl == "medium") {
+                    this.difficultyLvl = "easy";
+                } 
             }
             
             startQuiz() {
                 this.quesIndex = -1;
                 this.score = 0;
+                this.difficultyLvl = "easy";
                 this.user.resetScore();
                 this.quizIterator = this.generateQuestions();
                 return this.nextQuestion();
@@ -152,9 +168,14 @@
                 // If there is no question with the difficulty level
                 if (index === -1) {
                     index = this.allQues.length > 0 ? 0 : -1;
-                    this.increaseDifficulty();
+
+                    // Change difficulty level
+                    if (this.difficultyLvl == "hard"){
+                        this.decreaseDifficulty();
+                    } else {
+                        this.increaseDifficulty();
+                    }
                 }
-                
                 return index;
             }
 
@@ -175,6 +196,14 @@
                         this.incrementScore();
                         yield true; // yield true for correct answer
                     } else {
+                        // Decrease difficulty if needed
+                        if (this.numIncorrect >= 2) {
+                            this.decreaseDifficulty();
+                            this.numIncorrect = 0;
+                        }
+                        this.numIncorrect += 1;
+                        this.numCorrect = 0;
+                        
                         yield false; // yield false for incorrect answer
                     }
                 }
@@ -186,7 +215,7 @@
                 this.quesIndex = -1;
                 this.score = 0;
                 this.user.resetScore();
-                this.difficultyLvl = 1;
+                this.difficultyLvl = "easy";
                 feedbackElement.textContent = '';               
                 feedbackElement.classList.add('hidden');       
             }
@@ -199,8 +228,8 @@
                     if (data.response_code === 0) {
                         const results = data.results;
                         const questions = results.map((result) => {
-                            const choices = [...result.incorrect_answers, result.correct_answer];
-                            return new Question(result.question, choices, result.correct_answer, result.difficulty);
+                            const choices = [...result.incorrect_answers, result.correct_answer].sort(() => Math.random() - 0.5);
+                            return new Question(decodeURIComponent(result.question), choices, result.correct_answer, result.difficulty);
                         });
                         this.allQues = questions;
                     } else {
@@ -287,6 +316,8 @@
             
             // Update score display
             scoreDisplay.textContent = quiz.getScore();
+
+            quiz.removeQues();      // Remove current question
             
             // Show next button or finish quiz
             if (quiz.areQuesLeft()) {
