@@ -12,8 +12,9 @@
         
         <!-- Welcome Screen -->
         <div id="welcome-screen">
-            <p>Welcome to the Quiz! Enter your name to begin:</p>
-            <input type="text" id="username-input" placeholder="Your Name">
+		<p>Welcome to the Quiz!</p>
+		<p> Enter your name to begin:</p>
+		<input type="text" id="username-input" placeholder="Your Name" autocomplete="off">
             <button id="start-btn" class="start-btn">Start Quiz</button>
         </div>
         
@@ -29,7 +30,7 @@
         <!-- Results Screen -->
         <div id="results-screen" class="hidden results">
             <h2>Quiz Completed!</h2>
-            <p>Your score: <span id="final-score"></span></p>
+	    <p><span id="display-name"></span>, your score is <span id="final-score"></span></p>
             <button id="restart-btn" class="start-btn">Restart Quiz</button>
         </div>
     </div>
@@ -66,6 +67,7 @@
             }
         }
         
+	const numQuestions = 15;
         class Quiz {
             /*
             Manages overall quiz operations
@@ -222,14 +224,23 @@
 
             async fetchQuestions() {
                 try {
-                    const response = await fetch('https://opentdb.com/api.php?amount=10');
+			const response = await fetch(`https://opentdb.com/api.php?amount=${numQuestions.toString()}`);
                     const data = await response.json();
 
                     if (data.response_code === 0) {
                         const results = data.results;
+			const decodedText = document.createElement('textarea');
                         const questions = results.map((result) => {
                             const choices = [...result.incorrect_answers, result.correct_answer].sort(() => Math.random() - 0.5);
-                            return new Question(decodeURIComponent(result.question), choices, result.correct_answer, result.difficulty);
+			    decodedText.innerHTML = result.question;
+			    const fixedQuestion = decodedText.value;
+				const fixedChoices = choices.map((choice) => {
+					decodedText.innerHTML = choice;
+					return decodedText.value;
+				})
+			    decodedText.innerHTML = result.correct_answer;
+			    const fixedCorrect = decodedText.value;
+                            return new Question(fixedQuestion, fixedChoices, fixedCorrect, result.difficulty);
                         });
                         this.allQues = questions;
                     } else {
@@ -258,6 +269,7 @@
         const scoreDisplay = document.getElementById('score-display');
         const finalScore = document.getElementById('final-score');
         const restartBtn = document.getElementById('restart-btn');
+        const displayName = document.getElementById('display-name');
         
         // Quiz state variables
         let user;
@@ -278,6 +290,7 @@
               
             feedbackElement.textContent = '';       
             feedbackElement.classList.add('hidden');           
+	    
         }
         
         // Display current question
@@ -298,24 +311,37 @@
         function handleAnswer(choice) {
             // Disable all choice buttons
             const choiceButtons = document.querySelectorAll('.choice-btn');
+		let choiceButton; 
             choiceButtons.forEach(btn => {
-                btn.disabled = true;
+			btn.disabled = true;
+			btn.classList.add("no-hover");
                 if (btn.textContent === choice) {
+			choiceButton = btn;
                     btn.style.fontWeight = 'bold';
                 }
-            });
+	    });
+
             
             // Submit answer and get feedback
             const feedbackResult = quiz.submitAnswer(choice);
             const isCorrect = feedbackResult.value;
-            
+	    if (isCorrect) {
+		choiceButton.style.backgroundColor = "#32DE8A";
+	    } else {
+		choiceButton.style.backgroundColor = "#D56062";
+	    }
             // Display feedback
             feedbackElement.textContent = isCorrect ? 'Correct!' : `Incorrect! The correct answer is: ${currentQuestion.correctAns}`;
             feedbackElement.className = 'feedback ' + (isCorrect ? 'correct' : 'incorrect');
             feedbackElement.classList.remove('hidden');
-            
+           
             // Update score display
-            scoreDisplay.textContent = quiz.getScore();
+	   scoreDisplay.classList.remove('flash');
+	    void scoreDisplay.offsetWidth;
+	    scoreDisplay.textContent = quiz.getScore();
+	    if (isCorrect) {
+	    	scoreDisplay.classList.add('flash');
+	    }
 
             quiz.removeQues();      // Remove current question
             
@@ -324,7 +350,8 @@
                 nextBtn.classList.remove('hidden');
             } else {
                 // Show final results when no questions left
-                finalScore.textContent = `${quiz.getScore()} out of ${quiz.allQues.length}`;
+                finalScore.textContent = `${quiz.getScore()} out of ${numQuestions.toString()}`;
+		displayName.textContent = quiz.user.userName;    
                 setTimeout(() => {
                     quizScreen.classList.add('hidden');
                     resultsScreen.classList.remove('hidden');
@@ -352,7 +379,6 @@
                 welcomeScreen.classList.add('hidden');
                 quizScreen.classList.remove('hidden');
                 await initializeQuiz(username);
-
                 // Start quiz and display first question
                 const firstQuestionResult = quiz.startQuiz();
                 currentQuestion = firstQuestionResult.value;

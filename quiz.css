@@ -3,18 +3,26 @@ body {
     max-width: 600px;
     margin: 0 auto;
     padding: 20px;
+    background-color: #84BCDA;
 }
 
 .quiz-container {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: center;
+    text-align: center;
     background-color: #f5f5f5;
     padding: 20px;
     border-radius: 8px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    color: #011627;
 }
 
 .question {
     font-size: 1.2rem;
     margin-bottom: 20px;
+    flex: 1;
 }
 
 .choices {
@@ -22,30 +30,38 @@ body {
     flex-direction: column;
     gap: 10px;
     margin-bottom: 20px;
+    justify-content: center;
+    flex: 1;
 }
 
 .choice-btn {
     padding: 10px;
-    border: 1px solid #ddd;
+    border: 3px solid #011627;
     background-color: #fff;
     border-radius: 4px;
     cursor: pointer;
     text-align: left;
+    font-size: 1em;
 }
 
 .choice-btn:hover {
-    background-color: #f0f0f0;
+    background-color: #ECC30B;
+}
+
+.no-hover:hover {
+    background-color: #fff;
 }
 
 .feedback {
     margin-bottom: 20px;
     padding: 10px;
     border-radius: 4px;
+    flex: 1;
 }
 
 .correct {
-    background-color: #d4edda;
-    color: #155724;
+    background-color: #c2f5dc;
+    color: #145937;
 }
 
 .incorrect {
@@ -56,11 +72,28 @@ body {
 .score {
     font-weight: bold;
     margin-bottom: 20px;
+    flex: 1;
+}
+#score-display {
+   animation-duration: 1s;
+   animation-timing-function: ease-out;
+}
+
+.flash { animation-name: flashGreen; }
+@keyframes flashGreen {
+   0% {
+       color: #011627;
+   }
+
+   50% {
+       color: #32DE8A;
+   }
+
 }
 
 .next-btn, .start-btn {
     padding: 10px 20px;
-    background-color: #007bff;
+    background-color: #067BC2;
     color: white;
     border: none;
     border-radius: 4px;
@@ -68,7 +101,7 @@ body {
 }
 
 .next-btn:hover, .start-btn:hover {
-    background-color: #0069d9;
+    background-color: #044a74;
 }
 
 .results {
