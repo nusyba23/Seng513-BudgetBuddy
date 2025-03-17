@@ -9,7 +9,6 @@
 <body>
     <div class="quiz-container">
         <h1>Quiz App</h1>
-        
         <!-- Welcome Screen -->
         <div id="welcome-screen">
 		<p>Welcome to the Quiz!</p>
@@ -17,14 +16,22 @@
 		<input type="text" id="username-input" placeholder="Your Name" autocomplete="off">
             <button id="start-btn" class="start-btn">Start Quiz</button>
         </div>
+
+	<!-- Loader -->
+	<div id="loader" class="hidden"></div>
         
         <!-- Quiz Screen -->
         <div id="quiz-screen" class="hidden">
-            <div class="score">Score: <span id="score-display">0</span></div>
+	    <div id="hud">
+		    <div id="progress" class="hud-item">Question: <span id="current-q-index">0</span>/<span id="total-num-questions"></span></div> 
+		    <div id="score" class="hud-item">Score: <span id="score-display">0</span></div>
+	    </div>
             <div class="question" id="question-text"></div>
             <div class="choices" id="choices-container"></div>
             <div class="feedback hidden" id="feedback"></div>
-            <button id="next-btn" class="next-btn hidden">Next Question</button>
+	    <button id="submit-btn" class="submit-btn hidden">Submit</button>
+            <button id="next-btn" class="next-btn hidden">Next</button>
+	    <button id="finish-btn" class="finish-btn hidden">Finish Quiz</button>
         </div>
         
         <!-- Results Screen -->
@@ -67,7 +74,7 @@
             }
         }
         
-	const numQuestions = 15;
+	const numQuestions = 10;
         class Quiz {
             /*
             Manages overall quiz operations
@@ -81,6 +88,7 @@
                 this.difficultyLvl = null;
                 this.numIncorrect = 0;      // Number of incorrect answers in a row
                 this.numCorrect = 0;        // Number of correct answers in a row
+		this.numShown = 0;
             }
             
             addQuestion(questions) {
@@ -257,6 +265,7 @@
 
         
         // DOM Elements
+	const loader = document.getElementById('loader');
         const welcomeScreen = document.getElementById('welcome-screen');
         const quizScreen = document.getElementById('quiz-screen');
         const resultsScreen = document.getElementById('results-screen');
@@ -266,16 +275,21 @@
         const choicesContainer = document.getElementById('choices-container');
         const feedbackElement = document.getElementById('feedback');
         const nextBtn = document.getElementById('next-btn');
+        const submitBtn = document.getElementById('submit-btn');
+        const finishBtn = document.getElementById('finish-btn');
         const scoreDisplay = document.getElementById('score-display');
         const finalScore = document.getElementById('final-score');
         const restartBtn = document.getElementById('restart-btn');
         const displayName = document.getElementById('display-name');
+        const currentQIndex = document.getElementById('current-q-index');
+        const totalNumQuestions = document.getElementById('total-num-questions');
         
         // Quiz state variables
         let user;
         let quiz;
         let currentQuestion;
-        
+        let selectedBtn;
+
         // Initialize quiz
         async function initializeQuiz(username) {
             user = new User(username);
@@ -283,52 +297,63 @@
 
             await quiz.fetchQuestions();
 
-            if (!quiz.allQues || quiz.allQues.length === 0) {
-                alert("Failed to load questions. Please try again.");
-                return;
-            }
-              
-            feedbackElement.textContent = '';       
-            feedbackElement.classList.add('hidden');           
-	    
+	    return quiz.allQues && quiz.allQues.length > 0;
+
         }
         
         // Display current question
         function displayQuestion(question) {
+	    submitBtn.classList.remove('hidden');
             questionText.textContent = question.text;
+	    quiz.numShown += 1;
+	    currentQIndex.textContent = quiz.numShown.toString();
             choicesContainer.innerHTML = '';
-            
+            selectedBtn = undefined; 
             question.choices.forEach(choice => {
                 const button = document.createElement('button');
-                button.textContent = choice;
                 button.classList.add('choice-btn');
-                button.addEventListener('click', () => handleAnswer(choice));
+		button.textContent = choice;
+		    button.addEventListener('click', () => {
+			if (!feedbackElement.classList.contains('hidden')) {
+			    feedbackElement.classList.add('hidden');
+			}
+
+			const btnColor = button.style.backgroundColor;
+			if (selectedBtn != button) {
+			    button.style.backgroundColor = "#ECC30B";
+			    button.classList.add("no-hover");
+			    button.style.fontWeight = 'bold';
+
+			    if (selectedBtn != undefined) {
+			        selectedBtn.classList.remove("no-hover");
+			        selectedBtn.style.backgroundColor = "#fff";
+			        selectedBtn.style.fontWeight = 'normal';
+			    }
+
+			    selectedBtn = button;
+			}
+		    });
                 choicesContainer.appendChild(button);
             });
+		console.log(`answer = ${question.correctAns}`);
         }
         
         // Handle user answer
-        function handleAnswer(choice) {
-            // Disable all choice buttons
-            const choiceButtons = document.querySelectorAll('.choice-btn');
-		let choiceButton; 
-            choiceButtons.forEach(btn => {
-			btn.disabled = true;
-			btn.classList.add("no-hover");
-                if (btn.textContent === choice) {
-			choiceButton = btn;
-                    btn.style.fontWeight = 'bold';
-                }
+        function handleAnswer(finalChoice) {
+	    const choiceBtns = document.querySelectorAll(".choice-btn");
+	    choiceBtns.forEach(btn => {
+	        btn.disabled = "false";
+		if (!btn.classList.contains('no-hover')) {
+		    btn.classList.add("no-hover");
+		}
 	    });
-
-            
             // Submit answer and get feedback
-            const feedbackResult = quiz.submitAnswer(choice);
+            const feedbackResult = quiz.submitAnswer(finalChoice.textContent);
             const isCorrect = feedbackResult.value;
 	    if (isCorrect) {
-		choiceButton.style.backgroundColor = "#32DE8A";
+		finalChoice.style.backgroundColor = "#32DE8A";
 	    } else {
-		choiceButton.style.backgroundColor = "#D56062";
+		finalChoice.style.backgroundColor = "#D56062";
 	    }
             // Display feedback
             feedbackElement.textContent = isCorrect ? 'Correct!' : `Incorrect! The correct answer is: ${currentQuestion.correctAns}`;
@@ -350,12 +375,7 @@
                 nextBtn.classList.remove('hidden');
             } else {
                 // Show final results when no questions left
-                finalScore.textContent = `${quiz.getScore()} out of ${numQuestions.toString()}`;
-		displayName.textContent = quiz.user.userName;    
-                setTimeout(() => {
-                    quizScreen.classList.add('hidden');
-                    resultsScreen.classList.remove('hidden');
-                }, 1500);
+		finishBtn.classList.remove('hidden');
             }
         }
         
@@ -372,26 +392,62 @@
             displayQuestion(currentQuestion);
         }
          
+	function showResults() {
+                finalScore.textContent = `${quiz.getScore()} out of ${numQuestions.toString()}`;
+		displayName.textContent = quiz.user.userName;    
+		loader.classList.remove('hidden');
+		finishBtn.classList.add('hidden');
+                quizScreen.classList.add('hidden');
+                setTimeout(() => {
+	            loader.classList.add('hidden');
+                    resultsScreen.classList.remove('hidden');
+                }, 1500);
+	}
+
         // Event listeners
         startBtn.addEventListener('click', async () => {
             const username = usernameInput.value.trim();
             if (username) {
                 welcomeScreen.classList.add('hidden');
-                quizScreen.classList.remove('hidden');
-                await initializeQuiz(username);
-                // Start quiz and display first question
-                const firstQuestionResult = quiz.startQuiz();
-                currentQuestion = firstQuestionResult.value;
-                displayQuestion(currentQuestion);
+		loader.classList.remove('hidden');
+                let isInitialized = await initializeQuiz(username);
+		if (!isInitialized) {
+		    loader.classList.add('hidden');
+                    alert("Failed to load questions. Please try again.");
+		} else {
+            	    feedbackElement.textContent = '';       
+            	    feedbackElement.classList.add('hidden');           
+		    totalNumQuestions.textContent = numQuestions.toString();
+                    // Start quiz and display first question
+                    const firstQuestionResult = quiz.startQuiz();
+                    currentQuestion = firstQuestionResult.value;
+                    displayQuestion(currentQuestion);
+                    quizScreen.classList.remove('hidden');
+		    loader.classList.add('hidden');
+		}
             } else {
                 alert('Please enter your name to start.');
             }
             
         });
         
+	submitBtn.addEventListener('click', () => {
+	    if (selectedBtn != undefined) {
+	        submitBtn.classList.add('hidden');
+	        handleAnswer(selectedBtn);
+	    } else {
+	        feedbackElement.textContent = "Click a choice";
+		feedbackElement.classList.remove('hidden');
+            	feedbackElement.className = 'feedback warning';
+	    }
+	});
+
+	finishBtn.addEventListener('click',showResults);
+
         nextBtn.addEventListener('click', moveToNextQuestion);
         
         restartBtn.addEventListener('click', () => {
+	    finishBtn.classList.add('hidden');
             resultsScreen.classList.add('hidden');
             welcomeScreen.classList.remove('hidden');
             usernameInput.value = '';

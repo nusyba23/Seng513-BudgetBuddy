@@ -45,7 +45,7 @@ body {
 }
 
 .choice-btn:hover {
-    background-color: #ECC30B;
+    background-color: #f0f0f0;
 }
 
 .no-hover:hover {
@@ -69,14 +69,28 @@ body {
     color: #721c24;
 }
 
+.warning {
+    background-color: #f9edb6;
+    color: #5e4e04;
+}
+
+#hud {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+}
+.hud-item {
+    flex:1;
+}
 .score {
     font-weight: bold;
     margin-bottom: 20px;
     flex: 1;
 }
 #score-display {
+   animation-delay: 250ms;
    animation-duration: 1s;
-   animation-timing-function: ease-out;
+   animation-timing-function: ease-in;
 }
 
 .flash { animation-name: flashGreen; }
@@ -85,13 +99,17 @@ body {
        color: #011627;
    }
 
-   50% {
+   5% {
        color: #32DE8A;
+   }
+
+   95% {
+       color: #011627;
    }
 
 }
 
-.next-btn, .start-btn {
+.finish-btn, .submit-btn, .next-btn, .start-btn {
     padding: 10px 20px;
     background-color: #067BC2;
     color: white;
@@ -100,7 +118,7 @@ body {
     cursor: pointer;
 }
 
-.next-btn:hover, .start-btn:hover {
+.finish-btn:hover, .submit-btn:hover, .next-btn:hover, .start-btn:hover {
     background-color: #044a74;
 }
 
@@ -111,4 +129,23 @@ body {
 
 .hidden {
     display: none;
+}
+
+#loader {
+    align-self: center;
+    border: 1.6rem solid #ffffff;
+    border-radius: 50%;
+    border-top: 1.6rem solid #067BC2;
+    width: 5rem;
+    height: 5rem;
+    animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+	transform: rotate(360deg);
+    }
 }
