@@ -226,6 +226,7 @@
                 this.score = 0;
                 this.user.resetScore();
                 this.difficultyLvl = "easy";
+		this.numShown = 0;
                 feedbackElement.textContent = '';               
                 feedbackElement.classList.add('hidden');       
             }
@@ -412,8 +413,8 @@
 		loader.classList.remove('hidden');
                 let isInitialized = await initializeQuiz(username);
 		if (!isInitialized) {
-		    loader.classList.add('hidden');
                     alert("Failed to load questions. Please try again.");
+		    welcomeScreen.classList.remove('hidden'); 
 		} else {
             	    feedbackElement.textContent = '';       
             	    feedbackElement.classList.add('hidden');           
@@ -423,8 +424,8 @@
                     currentQuestion = firstQuestionResult.value;
                     displayQuestion(currentQuestion);
                     quizScreen.classList.remove('hidden');
-		    loader.classList.add('hidden');
 		}
+		loader.classList.add('hidden');
             } else {
                 alert('Please enter your name to start.');
             }
@@ -450,7 +451,9 @@
 	    finishBtn.classList.add('hidden');
             resultsScreen.classList.add('hidden');
             welcomeScreen.classList.remove('hidden');
+	    quiz.resetQuiz();
             usernameInput.value = '';
+	    scoreDisplay.textContent = quiz.getScore();
         });
     </script>
 </body>
