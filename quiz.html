@@ -74,7 +74,7 @@
             }
         }
         
-	const numQuestions = 10;
+        const numQuestions = 10;
         class Quiz {
             /*
             Manages overall quiz operations
@@ -88,13 +88,11 @@
                 this.difficultyLvl = null;
                 this.numIncorrect = 0;      // Number of incorrect answers in a row
                 this.numCorrect = 0;        // Number of correct answers in a row
-		this.numShown = 0;
+                this.numShown = 0;
             }
-            
-            addQuestion(questions) {
-                questions.forEach(function addQ(question) {
-                    this.allQues.push(question);
-                }, this);
+
+            getUsername() {
+                return this.user.userName;
             }
             
             getCurrentQuestion() {
@@ -131,10 +129,6 @@
                 Checks whether there are any more questions left in the quiz
                 */
                 return this.allQues.length > 0;
-            }
-            
-            setDifficulty(level) {
-                this.difficultyLvl = level; 
             }
 
             increaseDifficulty() {
@@ -226,7 +220,7 @@
                 this.score = 0;
                 this.user.resetScore();
                 this.difficultyLvl = "easy";
-		this.numShown = 0;
+                this.numShown = 0;
                 feedbackElement.textContent = '';               
                 feedbackElement.classList.add('hidden');       
             }
@@ -266,7 +260,7 @@
 
         
         // DOM Elements
-	const loader = document.getElementById('loader');
+        const loader = document.getElementById('loader');
         const welcomeScreen = document.getElementById('welcome-screen');
         const quizScreen = document.getElementById('quiz-screen');
         const resultsScreen = document.getElementById('results-screen');
@@ -304,70 +298,70 @@
         
         // Display current question
         function displayQuestion(question) {
-	    submitBtn.classList.remove('hidden');
-            questionText.textContent = question.text;
-	    quiz.numShown += 1;
-	    currentQIndex.textContent = quiz.numShown.toString();
-            choicesContainer.innerHTML = '';
-            selectedBtn = undefined; 
-            question.choices.forEach(choice => {
-                const button = document.createElement('button');
-                button.classList.add('choice-btn');
-		button.textContent = choice;
-		    button.addEventListener('click', () => {
-			if (!feedbackElement.classList.contains('hidden')) {
-			    feedbackElement.classList.add('hidden');
-			}
+            submitBtn.classList.remove('hidden');
+                questionText.textContent = question.text;
+            quiz.numShown += 1;
+            currentQIndex.textContent = quiz.numShown.toString();
+                choicesContainer.innerHTML = '';
+                selectedBtn = undefined; 
+                question.choices.forEach(choice => {
+                    const button = document.createElement('button');
+                    button.classList.add('choice-btn');
+            button.textContent = choice;
+                button.addEventListener('click', () => {
+                if (!feedbackElement.classList.contains('hidden')) {
+                    feedbackElement.classList.add('hidden');
+                }
 
-			const btnColor = button.style.backgroundColor;
-			if (selectedBtn != button) {
-			    button.style.backgroundColor = "#ECC30B";
-			    button.classList.add("no-hover");
-			    button.style.fontWeight = 'bold';
+                const btnColor = button.style.backgroundColor;
+                if (selectedBtn != button) {
+                    button.style.backgroundColor = "#ECC30B";
+                    button.classList.add("no-hover");
+                    button.style.fontWeight = 'bold';
 
-			    if (selectedBtn != undefined) {
-			        selectedBtn.classList.remove("no-hover");
-			        selectedBtn.style.backgroundColor = "#fff";
-			        selectedBtn.style.fontWeight = 'normal';
-			    }
+                    if (selectedBtn != undefined) {
+                        selectedBtn.classList.remove("no-hover");
+                        selectedBtn.style.backgroundColor = "#fff";
+                        selectedBtn.style.fontWeight = 'normal';
+                    }
 
-			    selectedBtn = button;
-			}
-		    });
-                choicesContainer.appendChild(button);
-            });
-		console.log(`answer = ${question.correctAns}`);
+                    selectedBtn = button;
+                }
+                });
+                    choicesContainer.appendChild(button);
+                });
+            console.log(`answer = ${question.correctAns}`);
         }
         
         // Handle user answer
         function handleAnswer(finalChoice) {
-	    const choiceBtns = document.querySelectorAll(".choice-btn");
-	    choiceBtns.forEach(btn => {
-	        btn.disabled = "false";
-		if (!btn.classList.contains('no-hover')) {
-		    btn.classList.add("no-hover");
-		}
-	    });
+            const choiceBtns = document.querySelectorAll(".choice-btn");
+            choiceBtns.forEach(btn => {
+                btn.disabled = "false";
+            if (!btn.classList.contains('no-hover')) {
+                btn.classList.add("no-hover");
+            }
+            });
             // Submit answer and get feedback
             const feedbackResult = quiz.submitAnswer(finalChoice.textContent);
             const isCorrect = feedbackResult.value;
-	    if (isCorrect) {
-		finalChoice.style.backgroundColor = "#32DE8A";
-	    } else {
-		finalChoice.style.backgroundColor = "#D56062";
-	    }
+            if (isCorrect) {
+            finalChoice.style.backgroundColor = "#32DE8A";
+            } else {
+            finalChoice.style.backgroundColor = "#D56062";
+            }
             // Display feedback
             feedbackElement.textContent = isCorrect ? 'Correct!' : `Incorrect! The correct answer is: ${currentQuestion.correctAns}`;
             feedbackElement.className = 'feedback ' + (isCorrect ? 'correct' : 'incorrect');
             feedbackElement.classList.remove('hidden');
-           
+            
             // Update score display
-	   scoreDisplay.classList.remove('flash');
-	    void scoreDisplay.offsetWidth;
-	    scoreDisplay.textContent = quiz.getScore();
-	    if (isCorrect) {
-	    	scoreDisplay.classList.add('flash');
-	    }
+            scoreDisplay.classList.remove('flash');
+            void scoreDisplay.offsetWidth;
+            scoreDisplay.textContent = quiz.getScore();
+            if (isCorrect) {
+                scoreDisplay.classList.add('flash');
+            }
 
             quiz.removeQues();      // Remove current question
             
@@ -376,7 +370,7 @@
                 nextBtn.classList.remove('hidden');
             } else {
                 // Show final results when no questions left
-		finishBtn.classList.remove('hidden');
+            finishBtn.classList.remove('hidden');
             }
         }
         
@@ -393,39 +387,39 @@
             displayQuestion(currentQuestion);
         }
          
-	function showResults() {
-                finalScore.textContent = `${quiz.getScore()} out of ${numQuestions.toString()}`;
-		displayName.textContent = quiz.user.userName;    
-		loader.classList.remove('hidden');
-		finishBtn.classList.add('hidden');
-                quizScreen.classList.add('hidden');
-                setTimeout(() => {
-	            loader.classList.add('hidden');
-                    resultsScreen.classList.remove('hidden');
-                }, 1500);
-	}
+        function showResults() {
+            finalScore.textContent = `${quiz.getScore()} out of ${numQuestions.toString()}`;
+            displayName.textContent = quiz.getUsername.call(quiz);    
+            loader.classList.remove('hidden');
+            finishBtn.classList.add('hidden');
+                    quizScreen.classList.add('hidden');
+                    setTimeout(() => {
+                    loader.classList.add('hidden');
+                        resultsScreen.classList.remove('hidden');
+                    }, 1500);
+        }
 
         // Event listeners
         startBtn.addEventListener('click', async () => {
             const username = usernameInput.value.trim();
             if (username) {
                 welcomeScreen.classList.add('hidden');
-		loader.classList.remove('hidden');
-                let isInitialized = await initializeQuiz(username);
-		if (!isInitialized) {
-                    alert("Failed to load questions. Please try again.");
-		    welcomeScreen.classList.remove('hidden'); 
-		} else {
-            	    feedbackElement.textContent = '';       
-            	    feedbackElement.classList.add('hidden');           
-		    totalNumQuestions.textContent = numQuestions.toString();
+                loader.classList.remove('hidden');
+                        let isInitialized = await initializeQuiz(username);
+                if (!isInitialized) {
+                            alert("Failed to load questions. Please try again.");
+                    welcomeScreen.classList.remove('hidden'); 
+                } else {
+                    feedbackElement.textContent = '';       
+                    feedbackElement.classList.add('hidden');           
+                    totalNumQuestions.textContent = numQuestions.toString();
                     // Start quiz and display first question
-                    const firstQuestionResult = quiz.startQuiz();
+                    const firstQuestionResult = quiz.startQuiz.bind(quiz)();
                     currentQuestion = firstQuestionResult.value;
                     displayQuestion(currentQuestion);
                     quizScreen.classList.remove('hidden');
-		}
-		loader.classList.add('hidden');
+                }
+                loader.classList.add('hidden');
             } else {
                 alert('Please enter your name to start.');
             }
@@ -438,8 +432,8 @@
 	        handleAnswer(selectedBtn);
 	    } else {
 	        feedbackElement.textContent = "Click a choice";
-		feedbackElement.classList.remove('hidden');
-            	feedbackElement.className = 'feedback warning';
+            feedbackElement.classList.remove('hidden');
+            feedbackElement.className = 'feedback warning';
 	    }
 	});
 
@@ -451,7 +445,7 @@
 	    finishBtn.classList.add('hidden');
             resultsScreen.classList.add('hidden');
             welcomeScreen.classList.remove('hidden');
-	    quiz.resetQuiz();
+            quiz.resetQuiz();
             usernameInput.value = '';
 	    scoreDisplay.textContent = quiz.getScore();
         });
