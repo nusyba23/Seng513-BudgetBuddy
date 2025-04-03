@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Profile - Mobile</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: #1e1e1e;
+      color: #fff;
+    }
+
+    /* Navbar Styles */
+    .mobile-navbar {
+      background-color: #1f1f1f;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.7rem 1rem;
+      border-bottom: 1px solid #333;
+      position: sticky;
+      top: 0;
+      z-index: 999;
+    }
+
+    .navbar-left {
+      display: flex;
+      align-items: center;
+    }
+
+    .hamburger {
+      font-size: 1.5rem;
+      cursor: pointer;
+    }
+
+    .navbar-title {
+      margin-left: 1rem;
+      font-weight: normal;
+      color: #ccc;
+      font-size: 0.85rem;
+    }
+
+    .navbar-right img {
+      width: 28px;
+      filter: brightness(0) invert(1);
+    }
+
+    /* Dropdown Menu */
+    .dropdown-menu {
+      display: none;
+      flex-direction: column;
+      background-color: #1f1f1f;
+      border-top: 1px solid #333;
+      position: absolute;
+      top: 50px;
+      left: 0;
+      width: 100%;
+      z-index: 998;
+    }
+
+    .dropdown-menu a {
+      color: #ccc;
+      text-decoration: none;
+      padding: 1rem;
+      border-bottom: 1px solid #333;
+    }
+
+    .dropdown-menu a.active {
+      color: #4CAF50;
+      font-weight: bold;
+    }
+
+    .container {
+      padding: 1rem;
+      max-width: 480px;
+      margin: auto;
+    }
+
+    h2 {
+      color: #fff;
+      font-size: 1.6rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .profile-section {
+      background-color: #252525;
+      padding: 1.5rem;
+      border-radius: 12px;
+      box-shadow: 0 2px 10px rgba(255, 255, 255, 0.05);
+    }
+
+    .profile-header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .profile-header img {
+      width: 60px;
+      height: 60px;
+      margin-right: 1rem;
+      border-radius: 50%;
+      border: 2px solid #4CAF50;
+    }
+
+    .profile-header h3 {
+      margin: 0;
+      font-size: 1.4rem;
+    }
+
+    .profile-links {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .profile-links a {
+      text-decoration: none;
+      color: #ccc;
+      background-color: #333;
+      padding: 1rem;
+      border-radius: 8px;
+      text-align: center;
+    }
+
+    .profile-links a:hover {
+      background-color: #444;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Navbar -->
+  <nav class="mobile-navbar">
+    <div class="navbar-left">
+      <div class="hamburger" onclick="toggleMenu()">☰</div>
+      <span class="navbar-title">Budget Buddy</span>
+    </div>
+    <div class="navbar-right">
+      <img src="https://cdn-icons-png.flaticon.com/512/847/847969.png" alt="Admin">
+    </div>
+  </nav>
+
+  <!-- Dropdown Menu -->
+  <div class="dropdown-menu" id="dropdownMenu">
+    <a href="#">Home</a>
+    <a href="#" class="active">Admin Profile</a>
+    <a href="#">Reports</a>
+    <a href="#">User Spending</a>
+  </div>
+
+  <!-- Main Container -->
+  <div class="container">
+    <h2>Admin Profile</h2>
+
+    <div class="profile-section">
+      <div class="profile-header">
+        <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" alt="Admin Profile">
+        <h3>Folah Admin</h3>
+      </div>
+
+      <div class="profile-links">
+        <a href="#">Manage Budget Templates</a>
+        <a href="#">Analyze User Reports</a>
+        <a href="#">Provide User Feedback</a>
+        <a href="#">System Settings</a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function toggleMenu() {
+      const menu = document.getElementById('dropdownMenu');
+      menu.style.display = menu.style.display === 'flex' ? 'none' : 'flex';
+    }
+  </script>
+
+</body>
+
+</html>

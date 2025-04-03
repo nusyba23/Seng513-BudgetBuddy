@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Task 3 - Spending Insights (Mobile with Hamburger)</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+      background-color: #121212;
+      color: #fff;
+    }
+
+    /* Navbar with Hamburger */
+    .mobile-navbar {
+      background-color: #1f1f1f;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.7rem 1rem;
+      border-bottom: 1px solid #333;
+      position: sticky;
+      top: 0;
+      z-index: 999;
+    }
+
+    .navbar-left {
+      display: flex;
+      align-items: center;
+    }
+
+    .hamburger {
+      font-size: 1.5rem;
+      cursor: pointer;
+    }
+
+    .navbar-title {
+      margin-left: 1rem;
+      font-weight: normal;
+      color: #ccc;
+      font-size: 0.85rem;
+    }
+
+    .navbar-right img {
+      width: 28px;
+      height: 28px;
+      filter: brightness(0) invert(1);
+    }
+
+    /* Dropdown menu */
+    .dropdown-menu {
+      display: none;
+      flex-direction: column;
+      background-color: #1f1f1f;
+      border-top: 1px solid #333;
+      position: absolute;
+      top: 50px;
+      left: 0;
+      width: 100%;
+      z-index: 998;
+    }
+
+    .dropdown-menu a {
+      color: #ccc;
+      text-decoration: none;
+      padding: 1rem;
+      border-bottom: 1px solid #333;
+    }
+
+    .dropdown-menu a.active {
+      color: #4CAF50;
+      font-weight: bold;
+    }
+
+    .container {
+      padding: 1rem;
+      max-width: 480px;
+      margin: auto;
+    }
+
+    h2 {
+      color: #4CAF50;
+      font-size: 1.4rem;
+      margin: 1.5rem 0 1rem 0;
+    }
+
+    .report-section {
+      background-color: #1e1e1e;
+      padding: 1rem;
+      border-radius: 10px;
+      margin-bottom: 1.5rem;
+      box-shadow: 0 2px 10px rgba(255, 255, 255, 0.05);
+    }
+
+    .report-section h3 {
+      margin-top: 0;
+      color: #4CAF50;
+      font-size: 1.2rem;
+    }
+
+    .progress-bar-container {
+      background-color: #333;
+      border-radius: 8px;
+      height: 20px;
+      margin-bottom: 0.8rem;
+      overflow: hidden;
+    }
+
+    .progress-bar {
+      height: 100%;
+      text-align: center;
+      color: #fff;
+      font-size: 0.75rem;
+      line-height: 20px;
+    }
+
+    .bar-green {
+      background-color: #4CAF50;
+    }
+
+    .bar-yellow {
+      background-color: #FFEB3B;
+      color: #333;
+    }
+
+    .bar-orange {
+      background-color: #FF9800;
+    }
+
+    .bar-red {
+      background-color: #F44336;
+    }
+
+    .summary {
+      font-size: 1rem;
+      margin-top: 0.5rem;
+    }
+
+    .chart-container {
+      margin-top: 1rem;
+    }
+
+    /* Bottom Navigation */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      max-width: 480px;
+      background-color: #1f1f1f;
+      display: flex;
+      justify-content: space-around;
+      padding: 0.5rem 0;
+      border-top: 1px solid #333;
+      z-index: 998;
+    }
+
+    .bottom-nav a {
+      color: #fff;
+      text-decoration: none;
+      text-align: center;
+      font-size: 0.85rem;
+      flex-grow: 1;
+    }
+
+    .bottom-nav a.active {
+      color: #4CAF50;
+      font-weight: bold;
+    }
+
+    .nav-icon {
+      display: block;
+      font-size: 1.2rem;
+      margin-bottom: 0.2rem;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Mobile Navbar with Hamburger -->
+  <nav class="mobile-navbar">
+    <div class="navbar-left">
+      <div class="hamburger" onclick="toggleMenu()">☰</div>
+      <span class="navbar-title">Budget Buddy</span>
+    </div>
+    <div class="navbar-right">
+      <img src="https://cdn-icons-png.flaticon.com/512/847/847969.png" alt="Profile">
+    </div>
+  </nav>
+
+  <!-- Dropdown menu -->
+  <div class="dropdown-menu" id="dropdownMenu">
+    <a href="#">Home</a>
+    <a href="#">Expenses</a>
+    <a href="#" class="active">Budget</a>
+    <a href="#">Spending Report</a>
+  </div>
+
+  <!-- Main Content -->
+  <div class="container">
+    <h2>March 2025 Report</h2>
+
+    <div class="report-section">
+      <h3>Groceries</h3>
+      <div class="progress-bar-container">
+        <div class="progress-bar bar-green" style="width: 80%;">$400</div>
+      </div>
+      <div class="summary">Total: $500 | Remaining: $100</div>
+    </div>
+
+    <div class="report-section">
+      <h3>Transport</h3>
+      <div class="progress-bar-container">
+        <div class="progress-bar bar-yellow" style="width: 60%;">$150</div>
+      </div>
+      <div class="summary">Total: $250 | Remaining: $100</div>
+    </div>
+
+    <div class="report-section">
+      <h3>Entertainment</h3>
+      <div class="progress-bar-container">
+        <div class="progress-bar bar-orange" style="width: 70%;">$200</div>
+      </div>
+      <div class="summary">Total: $300 | Remaining: $100</div>
+    </div>
+
+    <div class="report-section">
+      <h3>Utilities</h3>
+      <div class="progress-bar-container">
+        <div class="progress-bar bar-red" style="width: 90%;">$450</div>
+      </div>
+      <div class="summary">Total: $500 | Remaining: $50</div>
+    </div>
+
+    <div class="chart-container">
+      <canvas id="spendingChart" width="400" height="400"></canvas>
+    </div>
+  </div>
+
+  <!-- Bottom Navigation -->
+  <div class="bottom-nav">
+    <a href="#" class="nav-item"><span class="nav-icon">🏠</span>Home</a>
+    <a href="#" class="nav-item"><span class="nav-icon">💰</span>Expenses</a>
+    <a href="#" class="nav-item active"><span class="nav-icon">📊</span>Budget</a>
+    <a href="#" class="nav-item"><span class="nav-icon">📈</span>Spending</a>
+  </div>
+
+  <!-- Toggle Menu Script -->
+  <script>
+    function toggleMenu() {
+      const menu = document.getElementById('dropdownMenu');
+      menu.style.display = menu.style.display === 'flex' ? 'none' : 'flex';
+    }
+  </script>
+
+  <!-- Chart.js Script -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>
+    const ctx = document.getElementById('spendingChart').getContext('2d');
+    const spendingChart = new Chart(ctx, {
+      type: 'doughnut',
+      data: {
+        labels: ['Groceries', 'Transport', 'Entertainment', 'Utilities'],
+        datasets: [{
+          data: [400, 150, 200, 450],
+          backgroundColor: [
+            'rgba(76, 175, 80, 0.7)',
+            'rgba(255, 235, 59, 0.7)',
+            'rgba(255, 152, 0, 0.7)',
+            'rgba(244, 67, 54, 0.7)'
+          ],
+          borderWidth: 1
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: {
+            labels: {
+              color: '#fff'
+            }
+          }
+        }
+      }
+    });
+  </script>
+
+</body>
+
+</html>

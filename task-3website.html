@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Spending Insights - Budget Buddy</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: #121212;
+      color: #fff;
+    }
+
+    /* Navbar Styles */
+    .website-navbar {
+      background-color: #1f1f1f;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.5rem 1.5rem;
+      border-bottom: 1px solid #333;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .navbar-left {
+      display: flex;
+      align-items: center;
+    }
+
+    .navbar-left img {
+      width: 28px;
+      height: 28px;
+      margin-right: 0.5rem;
+    }
+
+    .navbar-left span {
+      font-weight: normal;
+      color: #ccc;
+      font-size: 0.9rem;
+    }
+
+    .navbar-center {
+      display: flex;
+      gap: 1.5rem;
+      justify-content: center;
+      flex: 1;
+    }
+
+    .navbar-center a {
+      color: #ccc;
+      text-decoration: none;
+      font-size: 0.9rem;
+      position: relative;
+    }
+
+    .navbar-center a.active {
+      color: #fff;
+      font-weight: bold;
+    }
+
+    .navbar-center a.active::after {
+      content: '';
+      position: absolute;
+      width: 100%;
+      height: 2px;
+      background-color: #4CAF50;
+      bottom: -4px;
+      left: 0;
+    }
+
+    .navbar-right img {
+      width: 28px;
+      height: 28px;
+      filter: brightness(0) invert(1);
+    }
+
+    /* Container */
+    .container {
+      max-width: 900px;
+      margin: 2rem auto;
+      padding: 0 1rem;
+    }
+
+    h2 {
+      font-size: 1.6rem;
+      color: #4CAF50;
+      margin-bottom: 1rem;
+      text-align: center;
+    }
+
+    /* Report List */
+    .report-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .report-item {
+      background-color: #1e1e1e;
+      padding: 1rem;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(255, 255, 255, 0.05);
+    }
+
+    .report-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.5rem;
+    }
+
+    .report-title {
+      color: #ccc;
+      font-size: 0.95rem;
+    }
+
+    .report-days {
+      color: #888;
+      font-size: 0.8rem;
+    }
+
+    .progress-bar-container {
+      background-color: #333;
+      border-radius: 6px;
+      height: 16px;
+      overflow: hidden;
+      margin-bottom: 0.5rem;
+    }
+
+    .progress-bar {
+      height: 100%;
+      text-align: right;
+      font-size: 0.75rem;
+      line-height: 16px;
+      padding-right: 0.5rem;
+    }
+
+    .bar-green {
+      background-color: #4CAF50;
+    }
+
+    .bar-yellow {
+      background-color: #FFEB3B;
+      color: #333;
+    }
+
+    .bar-orange {
+      background-color: #FF9800;
+    }
+
+    .bar-red {
+      background-color: #F44336;
+    }
+
+    .summary {
+      font-size: 0.85rem;
+      color: #aaa;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    /* Chart Container */
+    .chart-container {
+      background-color: #1e1e1e;
+      border-radius: 8px;
+      margin-top: 2rem;
+      padding: 1rem;
+      box-shadow: 0 2px 8px rgba(255, 255, 255, 0.05);
+      display: flex;
+      justify-content: center;
+    }
+
+    footer {
+      text-align: center;
+      font-size: 0.8rem;
+      color: #666;
+      margin: 2rem 0;
+    }
+
+    /* Responsive Adjustments */
+    @media (max-width: 768px) {
+      .navbar-center {
+        gap: 1rem;
+      }
+
+      .container {
+        margin: 1rem auto;
+      }
+
+      h2 {
+        font-size: 1.3rem;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Navbar -->
+  <nav class="website-navbar">
+    <div class="navbar-left">
+      <img src="https://cdn-icons-png.flaticon.com/512/34/34627.png" alt="Logo">
+      <span>Budget Buddy</span>
+    </div>
+    <div class="navbar-center">
+      <a href="#">Home</a>
+      <a href="#">Expenses</a>
+      <a href="#" class="active">Budget</a>
+      <a href="#">Spending Report</a>
+    </div>
+    <div class="navbar-right">
+      <img src="https://cdn-icons-png.flaticon.com/512/847/847969.png" alt="Profile">
+    </div>
+  </nav>
+
+  <!-- Content -->
+  <div class="container">
+    <h2>Spending Insights - March 2025</h2>
+
+    <div class="report-list">
+
+      <div class="report-item">
+        <div class="report-header">
+          <div class="report-title">1. Grocery</div>
+          <div class="report-days">20d</div>
+        </div>
+        <div class="progress-bar-container">
+          <div class="progress-bar bar-green" style="width: 80%;">$80</div>
+        </div>
+        <div class="summary">
+          <div>Remaining: $370</div>
+          <div>Total: $450</div>
+        </div>
+      </div>
+
+      <div class="report-item">
+        <div class="report-header">
+          <div class="report-title">2. Family & Friends</div>
+          <div class="report-days">20d</div>
+        </div>
+        <div class="progress-bar-container">
+          <div class="progress-bar bar-yellow" style="width: 37%;">$26</div>
+        </div>
+        <div class="summary">
+          <div>Remaining: $44</div>
+          <div>Total: $70</div>
+        </div>
+      </div>
+
+      <div class="report-item">
+        <div class="report-header">
+          <div class="report-title">3. Clothes</div>
+          <div class="report-days">20d</div>
+        </div>
+        <div class="progress-bar-container">
+          <div class="progress-bar bar-orange" style="width: 65%;">$65</div>
+        </div>
+        <div class="summary">
+          <div>Remaining: $35</div>
+          <div>Total: $100</div>
+        </div>
+      </div>
+
+      <div class="report-item">
+        <div class="report-header">
+          <div class="report-title">4. Christmas Shopping</div>
+          <div class="report-days">--</div>
+        </div>
+        <div class="progress-bar-container">
+          <div class="progress-bar bar-red" style="width: 82%;">$205</div>
+        </div>
+        <div class="summary">
+          <div>Remaining: $45</div>
+          <div>Total: $250</div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Chart Container -->
+    <div class="chart-container">
+      <canvas id="spendingChart" width="400" height="400"></canvas>
+    </div>
+
+  </div>
+
+  <footer>
+    &copy; 2025 Budget Buddy. All rights reserved.
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>
+    const ctx = document.getElementById('spendingChart').getContext('2d');
+    const spendingChart = new Chart(ctx, {
+      type: 'doughnut',
+      data: {
+        labels: ['Grocery', 'Family & Friends', 'Clothes', 'Christmas Shopping'],
+        datasets: [{
+          data: [80, 26, 65, 205],
+          backgroundColor: [
+            'rgba(76, 175, 80, 0.7)',
+            'rgba(255, 235, 59, 0.7)',
+            'rgba(255, 152, 0, 0.7)',
+            'rgba(244, 67, 54, 0.7)'
+          ],
+          borderWidth: 1
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: {
+            labels: {
+              color: '#fff'
+            }
+          }
+        }
+      }
+    });
+  </script>
+
+</body>
+
+</html>

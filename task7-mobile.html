@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Guest Demo - Budget Buddy (Mobile)</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: #121212;
+      color: #fff;
+    }
+
+    /* Container */
+    .container {
+      max-width: 480px;
+      margin: 1rem auto 4rem auto; /* leave space for bottom nav */
+      padding: 0 1rem;
+    }
+
+    h2 {
+      color: #4CAF50;
+      font-size: 1.4rem;
+      margin-bottom: 1rem;
+      text-align: center;
+    }
+
+    /* Section Styles */
+    .section {
+      background-color: #1e1e1e;
+      padding: 1rem;
+      border-radius: 8px;
+      margin-bottom: 1rem;
+      box-shadow: 0 2px 8px rgba(255, 255, 255, 0.05);
+    }
+
+    .section h3 {
+      color: #4CAF50;
+      margin-top: 0;
+      font-size: 1.1rem;
+      margin-bottom: 0.8rem;
+    }
+
+    .field {
+      margin-bottom: 0.8rem;
+    }
+
+    .field label {
+      display: block;
+      font-size: 0.85rem;
+      margin-bottom: 0.4rem;
+    }
+
+    .field input,
+    .field select {
+      width: 100%;
+      padding: 0.6rem;
+      font-size: 0.85rem;
+      border-radius: 6px;
+      border: none;
+      background-color: #333;
+      color: #fff;
+    }
+
+    .btn {
+      width: 100%;
+      background-color: #4CAF50;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      padding: 0.8rem;
+      font-size: 0.9rem;
+      cursor: pointer;
+      margin-top: 0.5rem;
+    }
+
+    .btn:hover {
+      background-color: #45a049;
+    }
+
+    .summary {
+      font-size: 0.85rem;
+      color: #ccc;
+    }
+
+    ul {
+      padding-left: 1.2rem;
+      margin: 0.8rem 0;
+    }
+
+    .chart-container {
+      background-color: #1e1e1e;
+      padding: 1rem;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(255, 255, 255, 0.05);
+      margin-top: 1rem;
+    }
+
+    footer {
+      text-align: center;
+      color: #666;
+      font-size: 0.8rem;
+      margin: 1.5rem 0;
+    }
+
+    /* Bottom Navbar Styles */
+    .bottom-navbar {
+      background-color: #1f1f1f;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      padding: 0.6rem 0;
+      border-top: 1px solid #333;
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      max-width: 480px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 999;
+    }
+
+    .bottom-navbar a {
+      color: #ccc;
+      text-decoration: none;
+      font-size: 0.8rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .bottom-navbar a.active {
+      color: #4CAF50;
+    }
+
+    .bottom-navbar a span {
+      font-size: 1.2rem;
+      margin-bottom: 0.2rem;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Main Content -->
+  <div class="container">
+
+    <h2>Guest Demo</h2>
+
+    <!-- Expense Entry Section -->
+    <div class="section">
+      <h3>Demo Expense Entry</h3>
+      <div class="field">
+        <label for="amount">Amount Spent</label>
+        <input type="number" id="amount" placeholder="Enter amount ($)">
+      </div>
+      <div class="field">
+        <label for="category">Category</label>
+        <select id="category">
+          <option>Groceries</option>
+          <option>Transport</option>
+          <option>Entertainment</option>
+          <option>Utilities</option>
+          <option>Miscellaneous</option>
+        </select>
+      </div>
+      <button class="btn" onclick="alert('This is a demo, no data is saved!')">Add Expense (Demo)</button>
+    </div>
+
+    <!-- Example Spending Report -->
+    <div class="section">
+      <h3>Spending Report Example</h3>
+      <div class="summary"><strong>Total Expenses:</strong> $900</div>
+      <ul>
+        <li>Groceries: $300</li>
+        <li>Transport: $150</li>
+        <li>Entertainment: $200</li>
+        <li>Utilities: $150</li>
+        <li>Miscellaneous: $100</li>
+      </ul>
+    </div>
+
+    <!-- Chart Container -->
+    <div class="chart-container">
+      <canvas id="guestDemoChart" width="400" height="400"></canvas>
+    </div>
+
+  </div>
+
+  <!-- Bottom Navbar -->
+  <nav class="bottom-navbar">
+    <a href="#" class="active">
+      <span>🏠</span>
+      Home
+    </a>
+    <a href="#">
+      <span>💰</span>
+      Expenses
+    </a>
+    <a href="#">
+      <span>📊</span>
+      Budget
+    </a>
+    <a href="#">
+      <span>📈</span>
+      Report
+    </a>
+  </nav>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>
+    const ctx = document.getElementById('guestDemoChart').getContext('2d');
+    const guestDemoChart = new Chart(ctx, {
+      type: 'pie',
+      data: {
+        labels: ['Groceries', 'Transport', 'Entertainment', 'Utilities', 'Miscellaneous'],
+        datasets: [{
+          data: [300, 150, 200, 150, 100],
+          backgroundColor: [
+            'rgba(76, 175, 80, 0.7)',
+            'rgba(255, 235, 59, 0.7)',
+            'rgba(255, 152, 0, 0.7)',
+            'rgba(244, 67, 54, 0.7)',
+            'rgba(153, 102, 255, 0.7)'
+          ],
+          borderWidth: 1
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: {
+            labels: {
+              color: '#fff'
+            }
+          }
+        }
+      }
+    });
+  </script>
+
+</body>
+
+</html>
